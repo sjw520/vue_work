@@ -52,7 +52,23 @@ export default {
     methods:{
         //搜索按钮的回调函数
         gosearch(){
-            this.$router.push({path:"/search"})
+            //路由传递参数
+            //第一种字符串形式
+            // this.$router.push({path:"/search/"+this.keyword})
+
+            // 第二种模板字符串
+            // this.$router.push(`/search/${this.keyword}?k=123`)
+
+            //第三种对象形式
+            this.$router.push({
+                name:'search',
+                params:{
+                    keyword:this.keyword
+                },
+                query:{
+                    k:"1233"
+                }
+            })
         }
     }
     
