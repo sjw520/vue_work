@@ -154,3 +154,61 @@ Footer组件：在登陆、注册时候隐藏
 * params参数：属于路径打那个中一部分，在配置路由的时候，需要占位
 * query参数：不属于路径当中的一部分,类似于/home?k=v,不需要展位
 
+
+
+### 5.3 路由传参相关问题
+
+1. 如何指定params参数可传可不传
+
+   * 如果路由要求传递params参数，但是你就不传递params参数，URL会有问题。可以在占位的后面加上一个问号（params可以传递或者不传递）
+   *  path:"/search/:keyword?",
+
+2. params如果传递空串如何解决
+
+   * 使用undefined解决：params参数可以传递、不传递（空字符串）
+
+     ```js
+     this.$router.push({name:search,params:{keyword:""||undefined}})
+     ```
+
+3. 编程式路由跳转到当前路由（参数不变），多次执行会抛出NavigationDuplication的警告错误
+
+   * 声明式导航没有这类问题，因为vue-router底层已经处理好
+
+   * this：当前组件实例
+
+   * this.$router属性：当前的这个属性，属性值VueRouter类的一个实例，当在入口文件注册路由的时候，给组件实例添加router|route属性
+
+   * push：VueRouter类的一个实例
+
+     ```js
+     //先把VueRouter原型对象的push，先保存一份
+     let originPush = VueRouter.prototype.push
+     
+     //重写push|replace
+     // 第一个参数：告诉原来push，你往哪跳转（传递哪些参数）
+     // 第二个参数：成功的回调
+     // 第三个参数：失败的回调
+     VueRouter.prototype.push = function (location,resolve,reject){
+         // call与apply区别
+         // 相同点：都可以调用函数一次，都可以篡改函数的上下文一次
+         // 不同点：call与apply传递参数：call传递参数用都好隔开，apply方法执行，传递数组
+         if(resolve && reject){
+             originPush.call(this,location,resolve,reject);
+         }else{
+             originPush.call(this,location,()=> { },() => {})
+         }
+     }
+     ```
+
+     
+
+# day 02
+
+## 1 Home模块组件拆分
+
+### 1.1 三级联动组件完成
+
+由于三级联动，在Home、Search、Detail，把三级联动注册为全局组件
+
+好处：只需要注册一次，就可以在项目任意地方使用

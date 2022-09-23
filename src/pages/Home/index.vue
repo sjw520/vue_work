@@ -1,6 +1,7 @@
 <template lang="">
     <div>
         主页
+        <TypeNav></TypeNav>
     </div>
 </template>
 <script>
