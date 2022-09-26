@@ -489,4 +489,10 @@ changeIndex:throttle(function(index){
                }
    ```
 
-   
+
+## 3 商品分类三级列表进行优化
+
+在App根组件当中发请求（跟组件mounted只执行一次）
+
+
+

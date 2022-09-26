@@ -61,7 +61,7 @@ export default {
     },
     mounted() {
         // 通知vuex发请求，获取数据，存储仓库中
-        this.$store.dispatch('categoryList')
+
         // 当组件挂在完毕，让show变为false
         // 如果不是Home路由组件，将typeNav进行隐藏
         if(this.$route.path!="/home"){
@@ -109,9 +109,14 @@ export default {
                     query.category3Id = category3id
                 }
 
-                // 添加条件参数
-                location.query = query
-                this.$router.push(location)
+                //判断路由里面params里面是否有参数
+                if(this.$route.params){
+                    location.params = this.$route.params;
+                    // 添加条件参数
+                    location.query = query
+                    this.$router.push(location)
+                }
+
             }
         },
         //当鼠标移入的时候，让商品列表进行展示

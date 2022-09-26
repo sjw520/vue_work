@@ -59,16 +59,13 @@ export default {
             // 第二种模板字符串
             // this.$router.push(`/search/${this.keyword}?k=123`)
 
+            if(this.$route.query){
             //第三种对象形式
-            this.$router.push({
-                name:'search',
-                params:{
-                    keyword:this.keyword
-                },
-                query:{
-                    k:"1233"
-                }
-            })
+                let location = {name:"search",params:{keyword:this.keyword||undefined}}
+                location.query = this.$route.query
+                this.$router.push(location)
+            }
+
         }
     }
     
