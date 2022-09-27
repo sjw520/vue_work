@@ -4,10 +4,10 @@
             <div class="sortList clearfix">
                 <div class="center">
                     <!--banner轮播-->
-                    <div class="swiper-container" id="mySwiper">
+                    <div class="swiper-container" ref="mySwiper">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <img src="./images/banner1.jpg" />
+                            <div class="swiper-slide" v-for="(carousel,index) in bannerList" :key="carousel.id">
+                                <img :src="carousel.imgUrl" />
                             </div>
                         </div>
                         <!-- 如果需要分页器 -->
@@ -101,8 +101,45 @@
         </div>
 </template>
 <script>
+import {mapState} from "vuex";
+//引包
+import Swiper from "swiper"
 export default {
-    
+    name:"ListContainer",
+  mounted() {
+      //mounted组件挂载完毕，正常说组件结构（DOM）已经有了
+      //派发action，通过vuex发起ajax请求,将数据存储到仓库当中
+    this.$store.dispatch("getBannerList")
+    //因为dispatch当中涉及到一部语句，导致v-for遍历的时候还没有完全因此不行
+  },
+  computed:{
+      ...mapState({
+        bannerList:state => state.home.bannerList
+      })
+  },
+  watch:{
+      //监听bannerList数据的变化，因为这条数据发生变化，直接空数组变为有四个元素的数组
+    bannerList:{
+      handler(newValue,oldVale){
+        //当前函数：只能保证bannerList已经有数据了，不能保证v-for已经执行完毕
+          this.$nextTick(() => {
+            //当你执行这个回调的时候，保证服务器数据回来了，v-for执行完毕了
+            var mySwiper = new Swiper(this.$refs.mySwiper,{
+              loop:true,
+              //分页器
+              pagination:{
+                el:".swiper-pagination",
+                clickable:true
+              },
+              navigation:{
+                nextE1:".swiper-button-next",
+                preE1:".swiper-button-pre",
+              }
+            })
+          })
+      }
+    }
+  }
 }
 </script>
 <style lang="less" scoped>

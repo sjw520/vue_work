@@ -1,6 +1,6 @@
 //当前这个模块：API进行统一管理
 import requests from "./request";
-
+import mockRequests from "./mockAjax"
 //三级联动的接口
 export const reqCategoryList = () => {
     return requests({
@@ -8,3 +8,10 @@ export const reqCategoryList = () => {
         method:"get"
     })
 }
+
+
+//获取banner（home首页轮播图接口）
+export const reqGetBannerList = () => mockRequests.get("/banner")
+
+//获取Floor组件的数据
+export const reqFloorList = () => mockRequests.get("/floor")

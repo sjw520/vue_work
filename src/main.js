@@ -9,11 +9,17 @@ import router from '@/router'
 // 引入仓库
 import store from "@/store"
 
+//引入mockServe.js
+import "@/mock/mockServe"
+
+//引入swiper样式
+import "swiper/css/swiper.css"
+
 Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
-  //注册路由信息：当这里书写router的时候，组件身上都拥有$route,$router属性
+  //注册路由信息：当这里书写router的时候，组件身上都拥有$route,$router属性,this.$router
   router,
   //注册仓库：组件实例的身上就会多了一个属性$store
   store 
