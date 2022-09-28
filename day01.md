@@ -496,3 +496,133 @@ changeIndex:throttle(function(index){
 
 
 
+## 4 mock数据模拟
+
+如果你想mock数据，需要用到插件mockjs
+
+**使用步骤：**
+
+1. 在项目src文件夹创建mock文件夹
+
+2. 准备json数据（mock文件夹中创建相应的json文件）---格式化
+
+   ```json
+   [
+     {
+       "id": "1",
+       "imgUrl": "/images/banner1.jpg"
+     },
+     {
+       "id": "2",
+       "imgUrl": "/images/banner2.jpg"
+     },
+     {
+       "id": "3",
+       "imgUrl": "/images/banner3.jpg"
+     },
+     {
+       "id": "4",
+       "imgUrl": "/images/banner4.jpg"
+     }
+   ]
+   ```
+
+   
+
+3. 把mock数据需要的图片防止到public文件夹中（public文件夹在打包的时候，会把相应的资源原封不动打包到dist文件夹中）
+
+4. 创建mockServer.js通过mockjs插件实现模拟数据
+
+   ```js
+   //引入mockjs模块
+   import Mock from 'mockjs';
+   //把json数据格式引入进来
+   //webpack默认对外暴露的：图片、json数据格式
+   import banner from "./banner.json"
+   import floor from "./floor.json"
+   
+   //mock数据:第一个参数请求地址路径 第二个参数请求数据
+   Mock.mock("/mock/banner",{code:200,data:banner});//模拟首页大的轮播图的数据
+   Mock.mock("/mock/floor",{code:200,data:floor});
+   ```
+
+   
+
+5. mockServe.js文件在入口文件中引入（至少需要执行一次，才能模拟数据）
+
+   ```js
+   import "mockServe.js"
+   ```
+
+   
+
+## 5 swiper
+
+安装swiper插件：最新版本6，安装的是swiper5
+
+经常制作轮播图（移动端|pc端都可以用）
+
+1. 引入相应依赖包
+2. 页面中的解构务必要有
+3. 初始化swiper实力，给轮播图添加动态效果
+
+**轮播图解决方案**
+
+watch+nextTick：数据监听：监听已有数据变化
+
+**nextTick**：在下次DOM更新循环之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的DOM（可以保证页面中结构一定是有的，经常和很多插件一起使用，都需要DOM存在了）
+
+```js
+  watch:{
+      //监听bannerList数据的变化，因为这条数据发生变化，直接空数组变为有四个元素的数组
+    bannerList:{
+      handler(newValue,oldVale){
+        //当前函数：只能保证bannerList已经有数据了，不能保证v-for已经执行完毕
+          this.$nextTick(() => {
+            //当你执行这个回调的时候，保证服务器数据回来了，v-for执行完毕了
+            var mySwiper = new Swiper(document.querySelector(".swiper-container"),{
+              loop:true,
+              //分页器
+              pagination:{
+                el:".swiper-pagination",
+                clickable:true
+              },
+              navigation:{
+                nextE1:".swiper-button-next",
+                preE1:".swiper-button-pre",
+              }
+            })
+          })
+      }
+    }
+  }
+```
+
+
+
+# day 05
+
+## 1 开发floor组件
+
+切记：仓库当中的state的数据格式，不能乱写，数据格式取决于服务器返回的数据
+
+getFloorList这个action需要在Home路由组件当中发，不能再floor组件内部发action，因为我们需要v-for遍历floor组件
+
+v-for也可以再自定义标签中使用
+
+```html
+<Floor v-for="(floor,index) in floorList" :key="floor.id" ></Floor>
+```
+
+### 1.1 props组件通信
+
+props：用于父子组件通信
+
+自定义时间：@on，@emit 可以实现子给父通信
+
+全局时间总线：$bus 全能
+
+插槽
+
+vuex
+
