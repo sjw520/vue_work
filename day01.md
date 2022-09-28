@@ -626,3 +626,86 @@ props：用于父子组件通信
 
 vuex
 
+## 2 共用全局组件
+
+开发项目中，如果看到某一个组件再很多地方都是用，将它变成全局组件
+
+注册一次，可以再任意地方使用，共用的组件}非路由组件放到components文件夹中
+
+## 3 getters属性
+
+```js
+//简化数据
+//计算属性 简化仓库中的数据
+//可以把组件当中需要用的数据简化一下
+//不分模块
+const getters = {
+    //当前仓库的state，并非大仓库的state
+    goodsList(state){
+        return state.searchList.goodsList
+    },
+    trademarkList(state){
+        return state.searchList.trademarkList
+    },
+    attrsList(state){
+        return state.searchList.attrsList
+    }
+};
+```
+
+
+
+```js
+    computed:{
+      //mapGetter传递的数组，因为getters计算是没有划分模块（home，search）
+      ...mapGetters(['goodList'])
+    }
+```
+
+## 4 assign
+
+```js
+ //将后面相应的属性值赋值给searchParams
+ Object.assign(this.searchParams,this.$route.query,this.$route.params)
+```
+
+## 5 监听路由
+
+```js
+    watch:{
+      //监听路由的信息是否发生变化，如果发生变化，再次发起请求
+      $route(newValue,oldValue){
+        Object.assign(this.searchParams,this.$route.params,this.$route.query)
+        //再次发起请求
+        this.getData()
+      }
+    }
+```
+
+
+
+# day 06
+
+## 1 动态开发面包屑中的分类名
+
+## 2 动态开发面包屑中的关键字
+
+### 2.1 当面包屑的关键字清楚后，需让兄弟组件Header中的关键清楚
+
+```js
+  beforeCreate() {
+    //全局时间总线$bus配置
+    Vue.prototype.$bus = this
+  },
+```
+
+```js
+this.$bus.$emit("clear")
+```
+
+```js
+ this.$bus.$on("clear",() => {
+      this.keyword = ""
+    })
+```
+

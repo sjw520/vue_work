@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <div>
         <TypeNav></TypeNav>
         <ListContainer></ListContainer>
