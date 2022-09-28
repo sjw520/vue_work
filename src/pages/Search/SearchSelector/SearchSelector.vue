@@ -12,11 +12,12 @@
         <a href="javascript:void(0);">更多</a>
       </div>
     </div>
+    <!-- 平台售卖属性的地方 -->
     <div class="type-wrap" v-for="(attr,index) in attrsList" :key="attr.attrId">
       <div class="fl key">{{attr.attrName}}</div>
       <div class="fl value">
         <ul class="type-list">
-          <li v-for="(attrValue,index) in attr.attrValueList" :key="index">
+          <li v-for="(attrValue,index) in attr.attrValueList" :key="index" @click="attrInfo(attr,attrValue)">
             <a>{{attrValue}}</a>
           </li>
         </ul>
@@ -38,6 +39,10 @@ export default {
       //品牌的事件处理函数
     tradeMatkHandler(trademark){
       this.$emit("trademarkInfo",trademark)
+    },
+    //平台售卖属性值的点击事件
+    attrInfo(attr,attrValue){
+      this.$emit("attrInfo",attr,attrValue)
     }
   }
   }
