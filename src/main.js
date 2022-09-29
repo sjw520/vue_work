@@ -7,6 +7,9 @@ Vue.component(TypeNav.name,TypeNav)
 
 import Carousel from "@/components/Carousel";
 Vue.component(Carousel.name,Carousel)
+//分页器的全局组件
+import Pagination from "@/components/Pagination";
+Vue.component(Pagination.name,Pagination)
 //引入路由
 import router from '@/router'
 // 引入仓库

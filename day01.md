@@ -709,3 +709,102 @@ this.$bus.$emit("clear")
     })
 ```
 
+## 3 箭头icon的制作
+
+1. 再public文件夹下静态页面引入阿里图标库
+
+   ```html
+   <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_3679721_t7ef4az0kni.css">
+   ```
+
+2. 使用
+
+   ```html
+   <a>综合<span v-show="isOne" class="iconfont icon-down"></span></a>
+   ```
+
+   
+
+# day 07
+
+## 1 分页功能实现
+
+**分页展示，需要哪些数据**
+
+1. 需要知道当前是第几个：pageNo字段代表当前页数
+2. 需要知道每一个需要展示多少条数据：pageSize字段进行表示
+3. 需要知道整个分页器一共由多少条数据，total字段进行表示
+4. 需要知道分页器连续页码的个数：5|7，以奇数对称
+5. continues代表分页连续页码个数
+
+
+
+
+
+对于分页器来说，很重要的一个地方即为（算出连续页面的起使数组和结束数字）
+
+**解析结构**
+
+```js
+//将对象中的属性单独领出来，可以用写this
+const {continues,pageNo,totalPage} = this
+```
+
+### 1.1 计算连续的页码的起使数字和结束数字
+
+```js
+    startNumAndEndNum(){
+      const {continues,pageNo,totalPage} = this
+      let start = 0,end = 0;
+      //连续页码数字5
+      //总页数没有连续的页码多
+      if(continues>totalPage){
+          start = 1;
+          end = totalPage
+      }else {
+        //连续页码数是5总页数一定是大于5的
+        start = pageNo - parseInt(continues/2)
+        end = pageNo + parseInt(continues/2)
+        //start数字出现负数纠正
+        if(start<1){
+          start = 1
+          end = continues
+        }
+        //end数字出现负数纠正
+        if(end>totalPage){
+          end = totalPage
+          start = totalPage-continues+1;
+        }
+          return {start,end}
+      }
+    }
+```
+
+### 1.2 分页器动态展示
+
+v-for：数组、数字、字符串、对象
+
+
+
+## 2 开发产品详情页面
+
+1. 静态组件
+2. 发请求
+3. vuex
+4. 动态展示组件
+
+### 2.1 滚动条
+
+```js
+export default new VueRouter({
+
+    routes,
+    //滚动行为
+    scrollBehavior(to,from,savedPosition){
+        //返回的y=0，代表滚动条再最上方
+        return {y:0}
+    }
+
+})
+```
+

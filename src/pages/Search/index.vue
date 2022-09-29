@@ -29,23 +29,11 @@
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{active:isOne}" @click="changeOrder('1')">
+                  <a>综合<span v-show="isOne" class="iconfont" :class="{'icon-up':isAsc,'icon-down':isDesc}"></span></a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{active:isTwo}" @click="changeOrder('2')">
+                  <a>销量<span v-show="isTwo" class="iconfont" :class="{'icon-up':isAsc,'icon-down':isDesc}"></span></a>
                 </li>
               </ul>
             </div>
@@ -56,8 +44,9 @@
               <li class="yui3-u-1-5" v-for="(good,index) in goodsList" :key="good.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank">
-                      <img :src="good.defaultImg" /></a>
+                    <router-link :to="`/detail/${good.id}`">
+                      <img :src="good.defaultImg" />
+                    </router-link>
                   </div>
                   <div class="price">
                     <strong>
@@ -79,35 +68,8 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+<!--分页-->
+          <Pagination :pageNo="searchParams.pageNo" :pageSize="searchParams.pageSize" :total="total" :continues="5" @getPageNo="getPageNo"></Pagination>
         </div>
       </div>
     </div>
@@ -116,7 +78,7 @@
 
 <script>
   import SearchSelector from './SearchSelector/SearchSelector'
-  import {mapGetters} from "vuex"
+  import {mapGetters,mapState} from "vuex"
   export default {
     name: 'Search',
 
@@ -135,8 +97,8 @@
           categoryName: "",
           //关键字
           keyword: "",
-          //排序
-          order: "",
+          //排序初始状态应该是综合
+          order: "1:desc",
           //分页器
           pageNo: 1,
           pageSize: 10,
@@ -157,7 +119,24 @@
     },
     computed:{
       //mapGetter传递的数组，因为getters计算是没有划分模块（home，search）
-      ...mapGetters(['goodsList'])
+      ...mapGetters(['goodsList']),
+      isOne(){
+        return this.searchParams.order.indexOf('1')!=-1
+      },
+      isTwo(){
+        return this.searchParams.order.indexOf('2')!=-1
+      },
+      isAsc(){
+        return this.searchParams.order.indexOf("asc")!=-1
+      },
+      isDesc(){
+        return this.searchParams.order.indexOf("desc")!=-1
+      },
+      //获取search模块展示的产品
+      ...mapState({
+          total:state => state.search.searchList.total
+      })
+
     },
     methods:{
       //向服务器发请求获取search模块数据
@@ -217,6 +196,27 @@
         //再次整理参数
         this.searchParams.props.splice(index,1)
         this.getData()
+      },
+      //排序的操作
+      changeOrder(flag){
+        let originOrder = this.searchParams.order;
+        //获取最开始的状态
+        let originFlag = this.searchParams.order.split(":")[0]
+        let originSort = this.searchParams.order.split("")[1]
+        let newOrder ='';
+        if(flag == originFlag){
+          newOrder = `${originFlag}:${originSort=="desc"?"asc":"desc"}`;
+        }else {
+          newOrder = `${flag}:${"desc"}`;
+        }
+        this.searchParams.order = newOrder
+        this.getData()
+      },
+      //自定义事件回调函数--获取当前第几页
+      getPageNo(pageNo){
+        //整理给服务器的参数
+        this.searchParams.pageNo = pageNo
+        this.getData();
       }
     },
     watch:{
