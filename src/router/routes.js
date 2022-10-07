@@ -6,8 +6,14 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import AddCartSuccess from "@/pages/AddCartSuccess"
 import ShopCart from "@/pages/ShopCart"
+import Trade from "@/pages/Trade"
 
 export default [
+    {
+        path:"/trade",
+        component:Trade,
+        meta:{show:true}
+    },
     {
         path:"/shopcart",
         component:ShopCart,
