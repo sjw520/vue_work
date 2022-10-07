@@ -934,3 +934,5 @@ phone && this.$store.dispatch("getCode",phone)
 
 ### 5.1 全局守卫
 
+项目当中，只要发生路由变化，守卫就能监听到
+
