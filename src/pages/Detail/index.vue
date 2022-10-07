@@ -376,11 +376,26 @@
           this.skuNum = parseInt(value)
         }
       },
-      addShopcar(){
+      //加入购物车
+      async addShopcar(){
         //1. 发请求 将产品加入到数据库
-
+        //这个方法加上asyc，返回是一个promise对象 要么成功要么失败
+        
         //2. 服务器存储成功  进行路由跳转传递参数
         //3. 失败 给用户提示
+
+        try{
+           await this.$store.dispatch("addOrUpdateShopCart",{skuId:this.$route.params.skuid,skuNum:this.skuNum})
+           //一些简单的数据skuNum，通过query形式路由组件传递过去
+          //  产品信息的数据，通过会话存储（不用持久化）
+           //路由跳转
+           sessionStorage.setItem("SKUINFO",JSON.stringify(this.skuInfo))
+           this.$router.push({name:"addcartsuccess",query:{
+            skuNum:this.skuNum
+           }})
+        }catch(error){
+            alert(error)
+        }
       }
     }
   }

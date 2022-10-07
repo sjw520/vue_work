@@ -34,3 +34,55 @@ export const reqAddOrUpdateShopCart = (skuId,skuNum)=>requests({
     url:`/cart/addToCart/${skuId}/${skuNum}`,
     method:"post"
 })
+
+// 获取购物车列表数据接口
+export const reqCartList = () => requests({
+    url:"/cart/cartList",
+    method:"get"
+})
+
+//删除购物车产品的接口
+export const reqDeleteCartById = (skuId)=>requests({
+    url:`/cart/deleteCart/${skuId}`,
+    method:"delete"
+})
+
+
+// 修改商品选中状态
+export const reqUpdateCheckedByid = (skuId,isChecked)=>requests({
+    url:`/cart/checkCart/${skuId}/${isChecked}`,
+    method:"get"
+})
+
+//获取验证码
+export const reqGetCode = (phone)=>requests({
+    url:`/user/passport/sendCode/${phone}`,
+    method:"get"
+})
+
+//注册
+//获取验证码
+export const reqUserRegister = (data)=>requests({
+    url:`/user/passport/register`,
+    method:"post",
+    data
+})
+
+//登录
+export const reqUserLogin = (data)=>requests({
+    url:`/user/passport/login`,
+    method:"post",
+    data
+})
+
+// 获取用户信息（需要带token）
+export const reqUserInfo = ()=>requests({
+    url:`/user/passport/auth/getUserInfo`,
+    method:"get",
+})
+
+// 退出登录
+export const reqLogout = ()=>requests({
+    url:`/user/passport/auth/logout`,
+    method:"get",
+})

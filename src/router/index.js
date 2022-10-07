@@ -10,6 +10,7 @@ import Login from "@/pages/Login"
 import Register from "@/pages/Register"
 import Detail from "@/pages/Detail";
 import routes from "@/router/routes";
+import store from "@/store"
 //先把VueRouter原型对象的push，先保存一份
 let originPush = VueRouter.prototype.push
 let originReplace = VueRouter.prototype.replace
@@ -38,7 +39,7 @@ VueRouter.prototype.replace = function (location,resolve,reject){
     }
 }
 
-export default new VueRouter({
+let router =  new VueRouter({
 
     routes,
     //滚动行为
@@ -48,3 +49,41 @@ export default new VueRouter({
     }
 
 })
+//全局守卫：前置守卫
+router.beforeEach(async (to,from,next)=>{
+    // next("/login")放行到指定的路径
+    // next();
+    //用户登录了才会有token
+    let token = store.state.user.token
+    //用户信息
+    let name = store.state.user.userInfo.name
+    if(token){
+        //用户登录之后还想去login
+        if(to.path=='login'||to.path=='register'){
+            next("/")
+        }else{
+            //登录了，但不是去login
+            if(name){
+                next()
+            }else{
+              //没有用户信息，让仓库存储用户信息
+              try {
+                //获取用户信息成功
+                await store.dispatch('getUserInfo');
+                next()
+              } catch (error) {
+                // token失效了
+                // 清除token
+                await store.dispatch("userLogout")
+                next("/login")
+              }
+             
+            }
+        }
+    }else{
+        // 未登录
+        next()
+    }
+})
+
+export default router

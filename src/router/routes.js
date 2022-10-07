@@ -4,8 +4,22 @@ import Home from "@/pages/Home";
 import Search from "@/pages/Search";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
+import AddCartSuccess from "@/pages/AddCartSuccess"
+import ShopCart from "@/pages/ShopCart"
 
 export default [
+    {
+        path:"/shopcart",
+        component:ShopCart,
+        meta:{show:true}
+    },
+    {
+        path:"/addcartsuccess",
+        name:"addcartsuccess",
+        component:AddCartSuccess,
+        meta:{show:true}
+    },
+
     {
         path:"/detail/:skuid",
         component:Detail,

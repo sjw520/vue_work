@@ -808,3 +808,129 @@ export default new VueRouter({
 })
 ```
 
+## 3 本地存储
+
+### 3.1 成功路由跳转与参数传递
+
+本地存储：持久化的----5M
+
+会话存储：并非持久 
+
+**本地存储和会话存储一般存储的都是字符串（不允许存对象）**
+
+```js
+//将对象转换为字符串会话存储
+sessionStorage.setItem("SKUINFO",JSON.stringify(this.skuInfo))
+
+//将字符串转换为对象获取
+   computed:{
+      skuInfo(){
+        return JSON.parse(sessionStorage.getItem("SKUINFO"))
+      }
+    }
+```
+
+## 4  uuid临时游客身份
+
+### 4.1 every
+
+```js
+let arr = [{cur:1},{cur:1}.{cur:1}]
+let result = arr.every(item=>item.cur==1)
+```
+
+
+
+```js
+      isAllCheck(){
+        // 遍历数组里面原理，只要全部元素isCheck属性为1返回真 只要有一个不是1为假
+        return this.cartInfoList.every(item=>item.isChecked==1)
+      }
+```
+
+### 4.2 uuid
+
+```js
+import {v4 as uuidv4} from "uuid"
+export const getUUID = () => {
+    //先从本地存储获取uuid
+    let uuid_token = localStorage.getItem("UUIDTOKEN");
+    if(!uuid_token){
+        // 没有 生成临时身份
+        uuid_token = uuidv4();
+        localStorage.setItem("UUIDTOKEN",uuid_token)
+    }
+    return uuid_token;
+}
+```
+
+## 5 promise
+
+```js
+Promise.all([p1,p2,p3])
+//p1,p2,p3,每一个都是Promise对象，如果有一个Promise失败，都失败，如果都成功，返回失败
+```
+
+
+
+
+
+# day 08
+
+## 1 登录与注册
+
+### 1.1 静态资源
+
+assets文件夹：放置全部组件公用静态资源
+
+在样式中使用@符号（src别名），需要加~
+
+```css
+background-image: url(~@/assets/images/icons.png);
+```
+
+### 1.2 解析赋值
+
+```js
+//phone为真执行后面
+phone && this.$store.dispatch("getCode",phone)
+```
+
+## 2 await
+
+1. await右侧的表达式一般为promise对象，但也可以是其他的值
+2. 如果表达式是promise对象，await返回的是promise成功的值
+3. 如果表达式是其他值，直接将此值作为await的返回值
+
+### 2.1注意
+
+1. await必须卸载async函数中，但async函数中可以没有await
+2. 如果await的promise失败了，就会抛出异常，需要通过try...carch捕获
+
+
+
+## 3 async函数
+
+1. 函数的返回值是promise对象
+2. promise对象的结果有async函数执行的返回值决定
+
+## 4 登录业务
+
+登录成功的时候，后台为了区分你这个用户，服务器下发token（唯一标识符）
+
+刷新之后，获取不到用户信息（token：vuex非持久化存储）
+
+**问题1**
+
+多个组件展示用户信息需要在每一个组件派发action
+
+**问题2**
+
+用户已经登录，就不应该再回登录页
+
+
+
+## 5 导航守卫
+
+### 5.1 全局守卫
+

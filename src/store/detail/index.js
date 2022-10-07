@@ -1,8 +1,10 @@
 import {reqGoodsInfo,reqAddOrUpdateShopCart} from "@/api";
-
+// 封装游客省份 生成随机字符串
+import {getUUID} from "@/utils/uuid_token"
 
 const state = {
-    goodInfo:{}
+    goodInfo:{},
+    uuid_token:getUUID()
 }
 const actions = {
     //获取产品信息
@@ -18,6 +20,11 @@ const actions = {
        //加入购物车以后将参数带给服务器
        //服务器写入数据陈工，并没有返回其他的数据，因此不需要再state里面存储数据
        let result =  await reqAddOrUpdateShopCart(skuId,skuNum);
+       if(result.code==200){
+        return "ok"
+       }else{
+        return Promise(new Error("faile"))
+       }
     }
 }
 const mutations = {

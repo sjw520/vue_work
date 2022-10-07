@@ -4,6 +4,8 @@ import Vuex from "vuex"
 import home from "./home"
 import search from "./search";
 import detail from "@/store/detail";
+import shopcart from "@/store/shopcart"
+import user from "@/store/user"
 //需要使用插件
 Vue.use(Vuex)
 
@@ -14,6 +16,8 @@ export default new Vuex.Store({
     modules:{
         home,
         search,
-        detail
+        detail,
+        shopcart,
+        user
     }
 });
