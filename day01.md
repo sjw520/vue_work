@@ -899,7 +899,7 @@ phone && this.$store.dispatch("getCode",phone)
 ## 2 await
 
 1. await右侧的表达式一般为promise对象，但也可以是其他的值
-2. 如果表达式是promise对象，await返回的是promise成功的值
+2. 如果表达式是promise对象，**await返回的是promise成功的值**
 3. 如果表达式是其他值，直接将此值作为await的返回值
 
 ### 2.1注意
@@ -935,4 +935,119 @@ phone && this.$store.dispatch("getCode",phone)
 ### 5.1 全局守卫
 
 项目当中，只要发生路由变化，守卫就能监听到
+
+# day 09
+
+## 1 统一管理api请求
+
+1. 在main.js下引入
+
+```js
+//统一接口api文件夹里面全部请求函数
+//统一引入
+import * as API from "@/api"
+
+
+new Vue({
+  render: h => h(App),
+  beforeCreate() {
+    //全局时间总线$bus配置
+    Vue.prototype.$bus = this
+    Vue.prototype.$API = API
+  },
+  //注册路由信息：当这里书写router的时候，组件身上都拥有$route,$router属性,this.$router
+  router,
+  //注册仓库：组件实例的身上就会多了一个属性$store
+  store 
+}).$mount('#app')
+```
+
+2. 调用
+
+   ```js
+   this.$API.reqSubmitOrder()
+   ```
+
+   
+
+## 2 关于生命周期
+
+注意：在生命周期函数中不使用async
+
+
+
+## 3 element ui使用
+
+1. 安装依赖
+
+   `npm install --save element-ui`
+
+2. 按需引入
+
+   `npm install babel-plugin-component -D`
+
+   ```js
+     "plugins": [
+       [
+         "component",
+         {
+           "libraryName": "element-ui",
+           "styleLibraryName": "theme-chalk"
+         }
+       ]
+     ]
+   ```
+
+3. 挂在原型上注册
+
+   ```js
+   import {Button,MessageBox} from "element-ui";
+   Vue.component(Button.name,Button)
+   //elementui注册组件第二种写法，挂在原型上
+   Vue.prototype.$msgbox = MessageBox;
+   Vue.prototype.$alert = MessageBox.alert;
+   ```
+
+   
+
+## 4 微信支付
+
+## 4.1 二维码生成QRcode
+
+```js
+async open() {
+        //生成二维码
+        let url = await QRCode.toDataURL(this.payInfo.codeUrl)
+        this.$alert(`<img src=${url} />`, '微信支付', {
+          dangerouslyUseHTMLString: true,
+          center:true,
+          //是否显示取消按钮
+          showCancelButton:true,
+          //取消按钮文本的内容
+          cancelButtonText:"支付遇见问题",
+          confirmButtonText:"已支付成功",
+          //右上角的x
+          showClose:false
+        });
+        // 支付成功，路由的跳转，支付失败，提示信息
+        //定时器没有，开启一个新定时器
+        if(!this.timer){
+          this.timer = setInterval(async ()=>{
+            //发请求获取用户支付转台
+            let result = await this.$API.reqPayStatus(this.orderId)
+            if(result.code==200){
+              //清楚定时器
+              clearInterval(this.timer)
+              this.timer = null
+              //保存状态码
+              this.code = result.code
+              //关闭弹出框
+              this.$msgbox.close();
+              //跳转到下一路由
+              this.$router.push("/paysuccess")
+            }
+          },1000)
+        }
+      }
+```
 
