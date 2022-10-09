@@ -81,7 +81,13 @@ router.beforeEach(async (to,from,next)=>{
             }
         }
     }else{
-        // 未登录
+        // 未登录 不能去交易、支付、个人相关组件 其他组件可以放行
+        // 这些路由应该去登录页面
+        let toPath = to.path
+        if(toPath.indexOf("/trade")!=-1 || toPath.indexOf("/pay")!=-1||toPath.indexOf("/center")){
+            //把未登录的时候要去而没有去成的信息，存储与地址栏中的路由
+            next("/login?redirect="+toPath)
+        }
         next()
     }
 })

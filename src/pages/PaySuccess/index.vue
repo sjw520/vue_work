@@ -20,6 +20,19 @@
 <script>
   export default {
     name: 'PaySuccess',
+    //组件内守卫
+    //不能获取组件实例this 当守卫之前签，组件还没有被创建
+    beforeRouteEnter(to,from,next){
+      if(from.path=="/pay"){
+        next()
+      }else {
+        next(false)
+      }
+    },
+    //
+    beforeRouteUpdate(){
+
+    }
   }
 </script>
 

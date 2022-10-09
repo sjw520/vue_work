@@ -33,6 +33,22 @@ import * as API from "@/api"
 
 Vue.config.productionTip = false
 
+//引入插件
+import VueLazyload from "vue-lazyload";
+//图片、json默认对外暴露
+import atm from "@/assets/logo.png"
+Vue.use(VueLazyload,{
+  //懒加载默认图片
+  loading:atm
+})
+
+//引入自定义插件
+import myPlugins from "@/plugins/myPlugins";
+Vue.use(myPlugins,{
+  name:"upper"
+})
+//引入表单校验插件 只要里面代码执行就行
+import "@/plugins/validate"
 new Vue({
   render: h => h(App),
   beforeCreate() {

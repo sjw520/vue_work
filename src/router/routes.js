@@ -9,8 +9,33 @@ import ShopCart from "@/pages/ShopCart"
 import Trade from "@/pages/Trade"
 import Pay from "@/pages/Pay";
 import PaySuccess from "@/pages/PaySuccess";
+import Center from "@/pages/Center";
+//引入二级路由组件
+import MyOrder from "@/pages/Center/myOrder";
+import GroupOrder from "@/pages/Center/groupOrder";
 
 export default [
+    {
+        path:"/center",
+        component:Center,
+        meta:{show:true},
+        //耳机路由组件
+        children:[
+            {
+                //路径要么写全要么不写
+                path:"myorder",
+                component:MyOrder
+            },
+            {
+                path:"grouporder",
+                component: GroupOrder
+            },
+            {
+                path:"/center",
+                redirect:"/center/myorder"
+            }
+        ]
+    },
     {
         path:"/paysuccess",
         component:PaySuccess,
@@ -19,12 +44,29 @@ export default [
     {
         path:"/pay",
         component:Pay,
-        meta:{show:true}
+        meta:{show:true},
+        beforeEnter:(to,from,next)=>{
+            if(from.path=="/trade"){
+                next()
+            }else{
+                next(false)
+            }
+        }
     },
     {
         path:"/trade",
         component:Trade,
-        meta:{show:true}
+        meta:{show:true},
+        //路由独享守卫
+        beforeEnter:(to,from,next) => {
+            //去交易页面，必须是从购物车而来
+            if(from.path=="/shopcart"){
+                next()
+            }else {
+                //其他路由组件而来，停留在当前
+                next(false)
+            }
+        }
     },
     {
         path:"/shopcart",

@@ -936,6 +936,44 @@ phone && this.$store.dispatch("getCode",phone)
 
 项目当中，只要发生路由变化，守卫就能监听到
 
+### 5.2 路由独享守卫
+
+```js
+    {
+        path:"/trade",
+        component:Trade,
+        meta:{show:true},
+        //路由独享守卫
+        beforeEnter:(to,from,next) => {
+            //去交易页面，必须是从购物车而来
+            if(from.path=="/shopcart"){
+                next()
+            }else {
+                //其他路由组件而来，停留在当前
+                next(false)
+            }
+        }
+    },
+```
+
+
+
+### 5.3 组件内守卫
+
+```js
+ //组件内守卫
+    //不能获取组件实例this 当守卫之前签，组件还没有被创建
+    beforeRouteEnter(to,from,next){
+      if(from.path=="/pay"){
+        next()
+      }else {
+        next(false)
+      }
+    },
+```
+
+
+
 # day 09
 
 ## 1 统一管理api请求
@@ -1051,3 +1089,156 @@ async open() {
       }
 ```
 
+# day 10
+
+## 1 二级路由
+
+1. 配置路由
+
+```js
+ 	{
+        path:"/center",
+        component:Center,
+        meta:{show:true},
+        //耳机路由组件
+        children:[
+            {
+                //路径要么写全要么不写
+                path:"myorder",
+                component:MyOrder
+            },
+            {
+                path:"grouporder",
+                component: GroupOrder
+            },
+            {
+                path:"/center",
+                redirect:"/center/myorder"
+            }
+        ]
+    },
+```
+
+
+
+## 2 图片懒加载
+
+1. 引入插件
+
+   ```js
+   //引入插件
+   import VueLazyload from "vue-lazyload";
+   //图片、json默认对外暴露
+   import atm from "@/assets/logo.png"
+   Vue.use(VueLazyload,{
+     //懒加载默认图片
+     loading:atm
+   })
+   ```
+
+2. 使用
+
+   ```vue
+   <img v-lazy="good.defaultImg" />
+   ```
+
+## 3 自定义插件
+
+1. 新建js文件
+
+   ```js
+   //Vue的插件一定暴露一个对象
+   let myPlugins = {}
+   
+   myPlugins.install = function (vue,options){
+       //vue.prototype.$bus任何数组都可以使用
+       // vue.component
+   }
+   
+   export default myPlugins
+   ```
+
+2. 引入使用
+
+   ```js
+   //引入自定义插件
+   import myPlugins from "@/plugins/myPlugins";
+   Vue.use(myPlugins,{
+     name:"upper"
+   })
+   ```
+
+3. 使用
+
+   ```vue
+   <h1 v-upper="msg">
+       
+   </h1>
+   ```
+
+   
+
+## 4 vee-validate使用
+
+1. 安装插件
+
+   ` npm i vee-validate@2 --save`
+
+   
+
+2. 使用插件
+
+   ```js
+   //vee-validate插件表单验证区域
+   import Vue from "vue";
+   import VeeValidate from "vee-validate";
+   //中文提示信息
+   import zh_CN from "vee-validate/dist/locale/zh_CN";
+   Vue.use(VeeValidate)
+   
+   //表单验证
+   VeeValidate.Validator.localize("zh_CN", {
+       messages: {
+           ...zh_CN.messages,
+           is: (field) => `${field}必须与密码相同`, // 修改内置规则的 message，让确认密码和密码相同
+       },
+       attributes: {
+           phone: "手机号",//当遇到phone字段的时候变成手机号
+           code: "验证码",
+           password: "密码",
+           password1: "确认密码",
+           agree:'协议'
+       },
+   });
+   
+   //自定义校验规则
+   VeeValidate.Validator.extend("tongyi", {
+       validate: (value) => {
+           return value;
+       },
+       getMessage: (field) => field + "必须同意",
+   });
+   
+   ```
+
+3. 执行文件
+
+   ```js
+   //引入表单校验插件 只要里面代码执行就行
+   import "@/plugins/validate"
+   ```
+
+4. 使用
+
+   ```vue
+    <input
+             placeholder="请输入你的密码"
+             v-model="password"
+             name="password"
+             v-validate="{ required: true, regex: /^[0-9A-Za-z]{8,20}$/ }"
+             :class="{ invalid: errors.has('password') }"
+           />
+           <span class="error-msg">{{ errors.first("password") }}</span>
+   ```
+
+   

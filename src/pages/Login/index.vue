@@ -80,8 +80,9 @@
         try {
           const {phone,password} = this
           phone&&password&&(await this.$store.dispatch("userLogin",{phone,password}))
-          //跳转到Home首页
-          this.$router.push('/home')
+          //登录的路由组件，路由当中是否包含query参数
+          let toPath = this.$route.query.redirect || "/home"
+          this.$router.push(toPath)
         } catch (error) {
           alert("登录失败")
         }
