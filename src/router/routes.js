@@ -1,6 +1,6 @@
 //路由配置信息
 import Detail from "@/pages/Detail";
-import Home from "@/pages/Home";
+//import Home from "@/pages/Home";
 import Search from "@/pages/Search";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -88,7 +88,7 @@ export default [
 
     {
         path:"/home",
-        component:Home,
+        component:()=> import("@/pages/Home"),
         meta:{show:true}
     },
 

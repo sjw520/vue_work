@@ -1242,3 +1242,51 @@ async open() {
    ```
 
    
+
+## 5 路由懒加载
+
+把不同路由对应的组件分割成不同的代码块，然后路由被访问的时候才加载对应组件，这样就更高效了
+
+```js
+const foo = () => {
+    return import("@/pages/Home")
+}
+```
+
+```js
+    {
+        path:"/home",
+        component:foo,
+        meta:{show:true}
+    },
+```
+
+```js
+    {
+        path:"/home",
+        component:()=> import("@/pages/Home"),
+        meta:{show:true}
+    },
+```
+
+# day 11 
+
+## 1 打包上线
+
+1. 打包
+
+   `npm run build`
+
+2. 项目打包后，代码都是经过压缩加密的，如果运行时报错，输出的错误信息无法准确得知是哪里的代码报错，有了map就可以像未加密的代码一样，准确输出是哪一行哪一列有错。所以该文件如果不需要可以去掉
+
+3. 在vue.config.js配置
+
+   `productionSourceMap:false`
+
+   
+
+   
+
+## 2 购买服务器
+
+阿里 腾讯
